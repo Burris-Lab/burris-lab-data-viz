@@ -30,7 +30,7 @@ You can download this R Markdown file (.Rmd) by using the "Code" dropdown menu. 
 
 ```
 .
-├── Burris Lab Data Viz Resources
+├── Burris-Lab/data-viz-resources
 └── forest-plot
     └── handley-LOS
         ├── README.md
@@ -46,7 +46,7 @@ Detailed directory tree:
 
 ```
 .
-├── Burris Lab Data Viz Resources
+├── Burris-Lab/data-viz-resources
 └── forest-plot
     └── handley-LOS
         ├── README.md

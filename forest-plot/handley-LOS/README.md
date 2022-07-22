@@ -20,7 +20,7 @@ The R Markdown file and the corresponding HTML file are found at the root of the
 
 ```
 .
-├── Burris Lab Data Viz Resources
+├── Burris-Lab/data-viz-resources
 └── forest-plot
     └── handley-LOS
         ├── README.md
@@ -36,7 +36,7 @@ Detailed directory tree:
 
 ```
 .
-├── Burris Lab Data Viz Resources
+├── Burris-Lab/data-viz-resources
 └── forest-plot
     └── handley-LOS
         ├── README.md
@@ -57,4 +57,4 @@ Detailed directory tree:
 
 ## Direct links
 
-- Forest plots for Handley 2021 & 2022 papers: https://burris-lab.github.io/burris-lab-data-viz/forest-plot/handley-LOS/forest-plot-handley-LOS.html
+- Forest plots for Handley 2021 & 2022 papers: https://Burris-Lab.github.io/data-viz-resources/forest-plot/handley-LOS/forest-plot-handley-LOS.html
