@@ -19,3 +19,7 @@
 ## R users
 
 If you're familiar with R and open the R project file `burris-lab-data-viz.Proj`, you can use the [`here` package](https://here.r-lib.org/index.html) which helps you handle relative file paths so that you don't have to define them manually.
+
+## Direct links
+
+- Forest plots for Handley 2021 & 2022 papers: https://spcanelon.github.io/burris-lab-data-viz/forest-plot/handley-LOS/forest-plot-handley-LOS.html
