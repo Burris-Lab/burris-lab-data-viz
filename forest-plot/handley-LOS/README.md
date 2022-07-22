@@ -12,7 +12,7 @@ The original R code written by Heather Burris was adapted for an R Markdown file
 - Original R script is `Maternal paper figures r code20211117.R`
 - R Markdown file is `forest-plot-handley-LOS.Rmd`.
 
-To view a step-by-step code-through of the R code used to produce the forest plots, check out [the rendered HTML file](https://spcanelon.github.io/burris-lab-data-viz/forest-plot/handley-LOS/forest-plot-handley-LOS.html) online.
+To view a **step-by-step code-through** of the R code used to produce the forest plots, check out [the rendered HTML file](https://spcanelon.github.io/burris-lab-data-viz/forest-plot/handley-LOS/forest-plot-handley-LOS.html) online.
 
 You can find the R Markdown file along with the original R script, data, and plot files organized in the `handley-LOS` folder. Each is organized according to the directory tree below.
 
