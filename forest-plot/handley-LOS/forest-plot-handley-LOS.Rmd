@@ -1,0 +1,723 @@
+---
+title: "Forest plots for Handley et al. 2021 & 2022 length of stay studies"
+author: "Heather H. Burris (with Nancy Yang and Anne Mullin)"
+date: '2021-11-17'
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float:
+      collapsed: false
+    code_folding: hide
+    code_download: true
+---
+
+Associated papers:
+
+- Handley et al. 2021: [Birth Hospital Length of Stay and Rehospitalization During COVID-19 | Pediatrics | American Academy of Pediatrics](https://publications-aap-org.proxy.library.upenn.edu/pediatrics/article/149/1/e2021053498/183458/Birth-Hospital-Length-of-Stay-and)
+- Handley et al. 2022: [Postpartum Length of Stay and Hospital Readmission Before and During the Coronavirus Disease 2019 (COVID-19) Pandemic: Obstetrics & Gynecology](https://journals.lww.com/greenjournal/Fulltext/2022/03000/Postpartum_Length_of_Stay_and_Hospital_Readmission.5.aspx)
+
+The original R code written by Heather Burris was adapted for this R Markdown file by Silvia Canelón.
+
+The code chunks are hidden by default, but you can Show or Hide all code using the "Code" dropdown menu on the top right of this page. Or you can selectively view specific code chunks by clicking the "Code" buttons througout the page.
+
+You can download this R Markdown file (.Rmd) by using the "Code" dropdown menu. You can also find the R Markdown file along with the original R script, data, and plot files organized in the Burris Lab Data Viz Resources folder. Each is organized according to the directory tree below.
+
+- R Markdown file and the corresponding HTML file are found at the root of the folder "handley-LOS"
+- Code is in the "code" folder
+- Data are in the "data" folder"
+- Plot files are in the "output" folder.
+
+```
+.
+├── Burris Lab Data Viz Resources
+└── forest-plot
+    └── handley-LOS
+        ├── README.md
+        ├── forest-plot-handley-LOS.Rmd
+        ├── forest-plot-handley-LOS.html
+        ├── code
+        ├── data
+        └── output
+
+```
+
+Detailed directory tree:
+
+```
+.
+├── Burris Lab Data Viz Resources
+└── forest-plot
+    └── handley-LOS
+        ├── README.md
+        ├── forest-plot-handley-LOS.Rmd
+        ├── forest-plot-handley-LOS.html
+        ├── code
+        │   └── Maternal paper figures r code20211117.R
+        ├── data
+        │   ├── Data for Figure of mat readmit1121.csv
+        │   └── dataforLMatLOS1121.csv
+        └── output
+            ├── PlotsSara_cosmos_fig_LOSONLY2noannote1.tiff
+            ├── PlotsSara_cosmos_fig_MATERNALreadmitONLY2noannote1.tiff
+            ├── bPlotsSara_cosmos_fig_MATERNALLOSONLY3withEE.tiff
+            ├── cPlotsSara_cosmos_fig_MATERNALBOTH3withee.tiff
+            └── cPlotsSara_cosmos_fig_MATERNALreadmitONLY3withee.tiff
+```
+
+## Setup
+
+```{r setup, include=TRUE, message=FALSE, warning=FALSE}
+xfun::pkg_attach("table1",
+                 "ggplot2",
+                 "dplyr",
+                 "scales",
+                 "grid",
+                 "gridExtra",
+                 "lattice",
+                 "gtable",
+                 "cowplot",
+                 "here")
+
+knitr::opts_chunk$set(echo = TRUE)
+
+# define directory
+
+# if you opened the R project file burris-lab-data-viz.Rproj:
+dir <- here("forest-plot", "handley-LOS")
+
+# if you're setting the working directory manually:
+
+# getwd() to get the current working directory
+# example output: "C:/Users/hhers/Dropbox"
+
+# setwd() to set your working directory
+# example: 
+# dir <- setwd("C:/Users/hhers/Dropbox/Burris Lab Data Viz Resources/forest-plot/handley-LOS")
+```
+
+## Short LOS
+
+```{r import-data-losmat}
+LOSMAT.Fig <- read.csv(here(dir, "data", "dataforLMatLOS1121.csv"))
+
+LOSMAT.Fig
+#View(LOSMAT.Fig)
+```
+
+```{r}
+df1 <- data.frame(LOSMAT.Fig)
+df1
+df1$combined <- factor(
+  df1$combined, 
+  levels=rev(df1$combined) # flips the order of the factors
+  ) 
+#df1 %>% 
+#  mutate(stripe = factor(ifelse(DOY %% 2 == 0, 1, 0))) %>% 
+
+# p1 ----
+p1 <- ggplot(df1, aes(x=combined, 
+                      y=OR, 
+                      ymin=lower, 
+                      ymax=upper)) + 
+  geom_linerange(size=1, 
+                 col="black") +
+  geom_hline(yintercept=1, 
+             lty=2) +
+  geom_point(size=1.5, 
+             colour="black", 
+             stroke = 1.0, 
+             shape=16) +
+  geom_rect(data=df1, 
+            colour="white",
+            mapping=aes(
+              xmin=as.numeric(combined)-0.5,
+              xmax=as.numeric(combined)+0.5, 
+              ymin=0.3, 
+              ymax=3.6, 
+              fill=Model),
+            alpha = 0.5)+
+  # scale_fill_manual( = alpha(c("light blue", "red"), 0.2))+
+  labs(
+    y="Odds ratios of short postpartum hospitalization LOS",
+    x="Mode of delivery")+
+  scale_y_continuous(trans = "log10", 
+                     limits=c(0.3, 7), 
+                     n.breaks = 9) +
+  theme_classic()+
+  theme(
+    #legend.title = element_blank(),
+    #legend.text=element_text(size=11),
+    legend.position = "none",
+    axis.text.x = element_text(color = "black", 
+                               size =  10),
+    axis.text.y = element_blank(),
+    axis.title.x = element_text(color = "black", 
+                                size =  18),
+    axis.title.y = element_text(color = "black", 
+                                size =  18),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank())+
+  #axis.text.y = element_text(color = "black", size =  10)) +
+  coord_flip() 
+
+p1
+
+#p1<-p1+scale_fill_brewer()
+#p1<-p1+scale_fill_manual(values = alpha(c("light blue", "red"), .1))
+
+# p1a ----
+p1a<-p1+ geom_rect(data=df1, colour="white", mapping=aes(xmin= 0.5, xmax=2.5, ymin=0.3, ymax=0.4), fill="dark green", alpha =0.5)
+#names(df1)
+
+# p1b ----
+p1b<-p1a+geom_rect(data=df1, colour="white", mapping=aes(xmin= 2.5, xmax=4.5, ymin=0.3, ymax=0.4), fill="dark green", alpha =0.5)
+
+p1b
+
+# p1c ----
+p1c <- p1b + geom_rect(data=df1, 
+                       colour="white", 
+                       mapping=aes(xmin= 4.5,
+                                   xmax=6.5, 
+                                   ymin=0.3, 
+                                   ymax=0.4), 
+                       fill="dark green", 
+                       alpha =0.5)
+
+p1c
+p1c <- p1c + scale_fill_brewer(palette = "Greens")
+p1c
+p1c <- p1c + annotate(geom="text", 
+                      x=6.0,
+                      y=3.0,
+                      label="A",
+                      size=5)
+p1c <- p1c + annotate(geom="text", 
+                      x=6,  
+                      y=0.5, 
+                      label="Unadjusted",
+                      size=4)
+p1c <- p1c + annotate(geom="text",
+                      x=5,
+                      y=0.5, 
+                      label="Adjusted",
+                      size=4)
+p1c <- p1c + annotate(geom="text", 
+                      x=4,
+                      y=0.5,
+                      label="Unadjusted",
+                      size=4)
+p1c <- p1c + annotate(geom="text",
+                      x=3,
+                      y=0.5,
+                      label="Adjusted",
+                      size=4)
+p1c <- p1c + annotate(geom="text",
+                      x=2,
+                      y=0.5,
+                      label="Unadjusted",
+                      size=4)
+p1c <- p1c + annotate(geom="text",
+                      x=1,
+                      y=0.5,
+                      label="Adjusted",
+                      size=4)
+p1c
+
+# p1d ----
+p1d <- p1c + annotate(geom="text", 
+                      x=5.5,
+                      y=0.35,
+                      label="All",
+                      size=5,
+                      colour="white",
+                      angle=90)
+p1d <- p1d+annotate(geom="text",
+                    x=3.5,
+                    y=0.35,
+                    label="Vaginal",
+                    colour="white", 
+                    size=5,
+                    angle=90)
+p1d <- p1d+annotate(geom="text", 
+                    x=1.5,
+                    y=0.35, 
+                    label="Cesarean",
+                    colour="white",
+                    size=5,
+                    angle=90)
+p1d
+p1d <- p1d + theme(plot.margin=unit(c(1,1,1,1),
+                                    "cm")) #adding space to the bottom of the first grob (c(bottom,left,top,right))
+p1d
+```
+
+### Maternal LOS, only 3 with EE
+
+```{r}
+## p1e ----
+p1e <- p1d + annotate(geom="text", 
+                      x=6,
+                      y=5,
+                      label="1.99 (1. 97 -2.02)",
+                      colour="black", 
+                      size=3)
+p1e <- p1e + annotate(geom="text", 
+                      x=5,  
+                      y=5, 
+                      label="2.35 (2. 32 -2. 3 9)",
+                      colour="black", 
+                      size=3)
+p1e <- p1e + annotate(geom="text", 
+                      x=4,
+                      y=5,
+                      label="1.91 (1. 88 -1. 9 4)",
+                      colour="black", 
+                      size=3)
+p1e <- p1e + annotate(geom="text",
+                      x=3,
+                      y=5,
+                      label="2.14 (2. 11 -2. 1 8)",
+                      colour="black",
+                      size=3)
+p1e <- p1e + annotate(geom="text",
+                      x=2,
+                      y=5,
+                      label="2.25 (2. 21 -2. 3 0)",
+                      colour="black",
+                      size=3)
+p1e <- p1e + annotate(geom="text",
+                      x=1,
+                      y=5,
+                      label="2.90 (2.83-2.98)",
+                      colour="black",
+                      size=3)
+p1e
+
+ggsave(here(dir, "output", "bPlotsSara_cosmos_fig_MATERNALLOSONLY3withEE.tiff"),
+       width=7.2,
+       height=4.8,
+       units= "in",
+       device = "tiff",
+       dpi=400,
+       plot = p1e)
+```
+
+## Readmission figure
+
+```{r import-data-readmit}
+readmitMAT.Fig <- read.csv(here(dir, "data", "Data for Figure of mat readmit1121.csv"))
+
+readmitMAT.Fig
+# View(readmitMAT.Fig)
+```
+
+```{r}
+df2 <- data.frame(readmitMAT.Fig)
+df2
+
+df2$combined <- factor(df2$combined, levels=rev(df2$combined)) # flips the order of the factors
+#df2 %>% 
+#  mutate(stripe = factor(ifelse(DOY %% 2 == 0, 1, 0))) %>% 
+```
+
+```{r}
+# p2 ----
+p2 <- ggplot(df2, aes(x=combined, 
+                      y=OR, 
+                      ymin=lower, 
+                      ymax=upper)) + 
+  geom_linerange(size=1, 
+                 col="black") +
+  geom_hline(yintercept=1, 
+             lty=2) +
+  geom_point(size=1.5, 
+             colour="black", 
+             stroke = 1.0, 
+             shape=16) +
+  geom_rect(data=df2, 
+            colour="white", 
+            mapping=aes(xmin=as.numeric(combined)-0.5, 
+                        xmax=as.numeric(combined)+0.5, 
+                        ymin=0.3, 
+                        ymax=3.6, 
+                        fill=Model),
+            alpha = 0.5)+
+  # scale_fill_manual( = alpha(c("light blue", "red"), 0.2))+
+  labs(y="Odds ratios of rehospitalization",
+       x="Mode of delivery")+
+  scale_y_continuous(trans = "log10", 
+                     limits=c(0.3, 7), 
+                     n.breaks = 9) +
+  theme_classic()+
+  theme(
+    #legend.title = element_blank(),
+    #legend.text=element_text(size=11),
+    legend.position = "none",
+    axis.text.x = element_text(color = "black", 
+                               size =  10),
+    axis.text.y = element_blank(),
+    axis.title.x = element_text(color = "black", 
+                                size =  18),
+    axis.title.y = element_text(color = "black", 
+                                size =  18),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank())+
+  #axis.text.y = element_text(color = "black", size =  10)) +
+  coord_flip() 
+#p2<-p2+scale_fill_brewer()
+#p2<-p2+scale_fill_manual(values = alpha(c("light blue", "red"), .1))
+p2
+
+# p2a ----
+p2a<-p2+ geom_rect(data=df2, 
+                   colour="white", 
+                   mapping=aes(xmin= 0.5, 
+                               xmax=2.5, 
+                               ymin=0.3, 
+                               ymax=0.4), 
+                   fill="dark green", 
+                   alpha =0.5)
+#names(df2)
+
+# p2b ----
+p2b<-p2a+geom_rect(data=df2, 
+                   colour="white", 
+                   mapping=aes(xmin= 2.5, 
+                               xmax=4.5, 
+                               ymin=0.3, 
+                               ymax=0.4), 
+                   fill="dark green", 
+                   alpha =0.5)
+
+p2b
+
+# p2c ----
+p2c <- p2b+geom_rect(data=df2, 
+                     colour="white", 
+                     mapping=aes(xmin= 4.5, 
+                                 xmax=6.5, 
+                                 ymin=0.3, 
+                                 ymax=0.4), 
+                     fill="dark green", 
+                     alpha =0.5)
+
+p2c
+p2c <- p2c+scale_fill_brewer(palette = "Greens")
+p2c
+p2c <- p2c + annotate(geom="text", 
+                      x=6.0,  
+                      y=3.0, 
+                      label="B", 
+                      size=5)
+p2c <- p2c+ annotate(geom="text", 
+                     x=6,  
+                     y=0.5, 
+                     label="Unadjusted", 
+                     size=4)
+p2c <- p2c+ annotate(geom="text", 
+                     x=5,  
+                     y=0.5, 
+                     label="Adjusted", 
+                     size=4)
+p2c <- p2c+ annotate(geom="text", 
+                     x=4,
+                     y=0.5,
+                     label="Unadjusted",
+                     size=4)
+p2c <- p2c+ annotate(geom="text",
+                     x=3,
+                     y=0.5,
+                     label="Adjusted",
+                     size=4)
+p2c <- p2c+ annotate(geom="text",
+                     x=2,
+                     y=0.5,
+                     label="Unadjusted",
+                     size=4)
+p2c <- p2c+ annotate(geom="text",
+                     x=1,
+                     y=0.5,
+                     label="Adjusted",
+                     size=4)
+p2c
+
+# p2d ----
+p2d <- p2c + annotate(geom="text", 
+                      x=5.5,
+                      y=0.35, 
+                      label="All", 
+                      size=5, colour="white", 
+                      angle=90)
+p2d <- p2d + annotate(geom="text", 
+                      x=3.5, 
+                      y=0.35,
+                      label="Vaginal",
+                      colour="white",
+                      size=5,
+                      angle=90)
+p2d <- p2d + annotate(geom="text",
+                      x=1.5,
+                      y=0.35, 
+                      label="Cesarean",
+                      colour="white", 
+                      size=5,
+                      angle=90)
+p2d
+p2d = p2d + theme(plot.margin=unit(c(1,1,1,1),"cm")) #adding space to the bottom of the first grob (c(bottom,left,top,right))
+p2d
+```
+
+### Maternal readmit, only 3 with EE
+
+```{r}
+# p2e ----
+p2e <- p2d + annotate(geom="text", 
+                      x=6,
+                      y=5,
+                      label="1.08 (1.03-1.13)",
+                      colour="black",
+                      size=3)
+p2e <- p2e + annotate(geom="text", 
+                      x=5,
+                      y=5,
+                      label="1.02 (0.97-1.08)",
+                      colour="black",
+                      size=3)
+p2e <- p2e + annotate(geom="text",
+                      x=4,
+                      y=5,
+                      label="1.07 (1.00-1.15)",
+                      colour="black", 
+                      size=3)
+p2e <- p2e + annotate(geom="text", 
+                      x=3,
+                      y=5,
+                      label="1.03 (0.96-1.10)",
+                      colour="black", 
+                      size=3)
+p2e <- p2e + annotate(geom="text",
+                      x=2,
+                      y=5,
+                      label="1.10 (1.02-1.18)",
+                      colour="black",
+                      size=3)
+p2e <- p2e + annotate(geom="text",
+                      x=1,
+                      y=5,
+                      label="1.01 (0.94-1.08)",
+                      colour="black",
+                      size=3)
+p2e
+
+ggsave(here(dir, "output", "cPlotsSara_cosmos_fig_MATERNALreadmitONLY3withee.tiff"),
+       width=7.2,
+       height=4.8,
+       units= "in",
+       device = "tiff",
+       dpi=400,
+       plot = p2e)
+
+```
+
+### Maternal, both 3 with EE
+
+```{r}
+# p1e + p2e ----
+
+# arranging the grobs
+both <-grid.arrange(
+  p1e,
+  p2e,
+  ncol = 1,
+  nrow = 2,
+  heights = c(4, 4),
+  clip = FALSE
+)
+both
+
+#saving as tiff (can save as any file type here)
+ggsave(here(dir, "output", "cPlotsSara_cosmos_fig_MATERNALBOTH3withee.tiff"),
+       width=7.2,
+       height=9.6,
+       units= "in",
+       device = "tiff",
+       dpi=400,
+       plot = both)
+getwd()
+```
+
+## No annotation
+
+### Maternal LOS, only 2
+
+```{r}
+# p1c ----
+p1c <- p1b + geom_rect(data=df1,
+                       colour="white",
+                       mapping=aes(xmin= 4.5, 
+                                   xmax=6.5, 
+                                   ymin=0.3, 
+                                   ymax=0.4), 
+                       fill="dark green", 
+                       alpha =0.5)
+
+p1c
+p1c <- p1c + scale_fill_brewer(palette = "Greens")
+p1c
+#p1c <- p1c + annotate(geom="text", x=6.0,  y=3.0, label="A", size=5)
+p1c <- p1c+ annotate(geom="text", 
+                     x=6,
+                     y=0.5,
+                     label="Unadjusted",
+                     size=4)
+p1c <- p1c+ annotate(geom="text",
+                     x=5,
+                     y=0.5,
+                     label="Adjusted",
+                     size=4)
+p1c <- p1c+ annotate(geom="text",
+                     x=4,
+                     y=0.5,
+                     label="Unadjusted",
+                     size=4)
+p1c <- p1c+ annotate(geom="text",
+                     x=3,
+                     y=0.5,
+                     label="Adjusted",
+                     size=4)
+p1c<-p1c+ annotate(geom="text",
+                   x=2,
+                   y=0.5,
+                   label="Unadjusted",
+                   size=4)
+p1c<- p1c+ annotate(geom="text",
+                    x=1,
+                    y=0.5,
+                    label="Adjusted",
+                    size=4)
+p1c
+
+# p1d ----
+p1d<-p1c+annotate(geom="text",
+                  x=5.5,
+                  y=0.35, 
+                  label="All",
+                  size=5,
+                  colour="white",
+                  angle=90)
+p1d<-p1d+annotate(geom="text",
+                  x=3.5, 
+                  y=0.35,
+                  label="Vaginal",
+                  colour="white",
+                  size=5,
+                  angle=90)
+p1d<-p1d+annotate(geom="text",
+                  x=1.5,
+                  y=0.35, 
+                  label="Cesarean",
+                  colour="white",
+                  size=5,
+                  angle=90)
+p1d
+p1d <- p1d + theme(plot.margin=unit(c(1,1,1,1),"cm")) #adding space to the bottom of the first grob (c(bottom,left,top,right))
+
+ggsave(here(dir, "output", "PlotsSara_cosmos_fig_LOSONLY2noannote1.tiff"),
+       width=7.2,
+       height=4.8,
+       units= "in",
+       device = "tiff",
+       dpi=400,
+       plot = p1d)
+```
+
+```{r}
+# p2c ----
+p2b
+
+p2c <- p2b + geom_rect(data=df2,
+                       colour="white",
+                       mapping=aes(xmin= 4.5, 
+                                   xmax=6.5,
+                                   ymin=0.3,
+                                   ymax=0.4),
+                       fill="dark green",
+                       alpha =0.5)
+
+p2c
+p2c <- p2c + scale_fill_brewer(palette = "Greens")
+p2c
+#p2c <- p2c + annotate(geom="text", x=6.0,  y=3.0, label="B", size=5)
+p2c <- p2c + annotate(geom="text", 
+                      x=6,
+                      y=0.5,
+                      label="Unadjusted",
+                      size=4)
+p2c <- p2c + annotate(geom="text",
+                      x=5,
+                      y=0.5,
+                      label="Adjusted",
+                      size=4)
+p2c <- p2c + annotate(geom="text",
+                      x=4,
+                      y=0.5,
+                      label="Unadjusted",
+                      size=4)
+p2c <- p2c + annotate(geom="text",
+                      x=3,
+                      y=0.5,
+                      label="Adjusted",
+                      size=4)
+p2c <- p2c + annotate(geom="text",
+                      x=2,
+                      y=0.5,
+                      label="Unadjusted",
+                      size=4)
+p2c <- p2c + annotate(geom="text",
+                      x=1,
+                      y=0.5,
+                      label="Adjusted",
+                      size=4)
+p2c
+```
+
+### Maternal readmit, only 2
+
+```{r}
+
+# p2d ----
+p2d<-p2c+annotate(geom="text",
+                  x=5.5,
+                  y=0.35,
+                  label="All",
+                  size=5,
+                  colour="white",
+                  angle=90)
+p2d<-p2d+annotate(geom="text",
+                  x=3.5,
+                  y=0.35, 
+                  label="Vaginal",
+                  colour="white", 
+                  size=5,
+                  angle=90)
+p2d<-p2d+annotate(geom="text", 
+                  x=1.5,
+                  y=0.35, label="Cesarean",
+                  colour="white",
+                  size=5,
+                  angle=90)
+p2d
+p2d = p2d + theme(plot.margin=unit(c(1,1,1,1),"cm")) #adding space to the bottom of the first grob (c(bottom,left,top,right))
+
+ggsave(here(dir, "output", "PlotsSara_cosmos_fig_MATERNALreadmitONLY2noannote1.tiff"),
+       width=7.2,
+       height=4.8,
+       units= "in",
+       device = "tiff",
+       dpi=400,
+       plot = p2d)
+
+# getwd()
+```

@@ -1,0 +1,7 @@
+Pop,Model,combined,OR,lower,upper
+All,Unadjusted,1,1.99,1.97,2.02
+All,Adjusted,2,2.35,2.32,2.39
+Vaginal,Unadjusted,3,1.91,1.88,1.94
+Vaginal,Adjusted,4,2.14,2.11,2.18
+Cesarean,Unadjusted,5,2.25,2.21,2.30
+Cesarean,Adjusted,6,2.90,2.83,2.98
