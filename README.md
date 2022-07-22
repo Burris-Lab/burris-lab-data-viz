@@ -22,4 +22,5 @@ If you're familiar with R and open the R project file `burris-lab-data-viz.Proj`
 
 ## Direct links
 
+### Forest plots
 - Forest plots for Handley 2021 & 2022 papers: https://burris-lab.github.io/burris-lab-data-viz/forest-plot/handley-LOS/forest-plot-handley-LOS.html
