@@ -54,3 +54,7 @@ Detailed directory tree:
             ├── cPlotsSara_cosmos_fig_MATERNALBOTH3withee.tiff
             └── cPlotsSara_cosmos_fig_MATERNALreadmitONLY3withee.tiff
 ```
+
+## Direct links
+
+- Forest plots for Handley 2021 & 2022 papers: https://burris-lab.github.io/burris-lab-data-viz/forest-plot/handley-LOS/forest-plot-handley-LOS.html
