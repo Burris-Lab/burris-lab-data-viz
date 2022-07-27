@@ -6,6 +6,8 @@
 .
 ├── README.md <-- you are here!
 ├── data-viz-resources.Rproj <-- you can ignore this if not an R user
+├── density-plot
+    └── DensityPlot.R
 └── forest-plot
     └── handley-LOS
         ├── README.md
@@ -24,3 +26,4 @@ If you're familiar with R and open the R project file `data-viz-resources.Proj`,
 
 ### Forest plots
 - Forest plots for Handley 2021 & 2022 papers: https://Burris-Lab.github.io/data-viz-resources/forest-plot/handley-LOS/forest-plot-handley-LOS.html
+- Density plot R script: [density-plot/DensityPlot.R](density-plot/DensityPlot.R)
