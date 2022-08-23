@@ -1,6 +1,6 @@
 # README
 
-## Folder structure for the `data-viz-resources` 
+## Folder structure for `data-viz-resources` 
 
 ```
 .
@@ -20,7 +20,7 @@
 
 ## R users
 
-If you're familiar with R and open the R project file `data-viz-resources.Proj`, you can use the [`here` package](https://here.r-lib.org/index.html) which helps you handle relative file paths so that you don't have to define them manually.
+If you're familiar with R and open the R project file `data-viz-resources.Rproj`, you can use the [`here` package](https://here.r-lib.org/index.html) which helps you handle relative file paths so that you don't have to define them manually.
 
 ## Direct links
 
